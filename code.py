@@ -212,22 +212,18 @@ def main():
 
         prompt = PromptTemplate(template=template, input_variables=[])
 
-        max_retry_time = 20
-        for retry_count in range(max_retry_time):
-            try:
-                agent_executor = create_vectorstore_agent(
-                    llm=OpenAI(temperature=0),
-                    toolkit=toolkit,
-                    prompt=prompt,
-                    verbose=True,
-                )
-                break
-            except Exception as e:
-                print(f"Error: {e}")
-                time.sleep(1)
-        else:
-            print(f"Max retry reached for repo {repo_name}")
-            continue
+        try:
+            agent_executor = create_vectorstore_agent(
+                llm=OpenAI(temperature=0),
+                toolkit=toolkit,
+                prompt=prompt,
+                verbose=True,
+            )
+        except Exception as e:
+            if e.response.status_code == 500:
+                print(f"Error 500 occurred for repo {repo_name}. Skipping...")
+            else:
+                raise e
         tools.append(
             Tool(
                 name=f"agent {repo_name}",
@@ -248,19 +244,19 @@ def main():
     agent_withtools = initialize_agent(tools, llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True)
 
 
-    response=agent_withtools("""consider your self as a specialist in Computer science. You are given with multiple vectorestores each representing a repository.
+    response=agent_withtools.run("""consider your self as a specialist in Computer science. You are given with multiple vectorestores each representing a repository.
     your task is to explore each repository and then derive there complexity score out of 10 based on the following factors:
     you have to follow the following steps:
     1) explore every repository available to you.
     2) derive there complexity score out of 10 based on the following factors: number of files present in repository, type of content in files, length of codes, number of coding languages , technology used and probelm solved in a repository
     3) find repository with most complexity score
-    3) at the end your final answer must contain name repository which has the most complexity score with reasoning of atleast 200 words.
+    3) at the end your final answer must contain name repository which has the most complexity score with reasoning and explation in atleast 300 words.
 
     """)
 
     main_result=response
     #print(main_result)
-    st.write(main_result[1])
+    st.markdown(main_result)
 
 if __name__ == "__main__":
     main()
