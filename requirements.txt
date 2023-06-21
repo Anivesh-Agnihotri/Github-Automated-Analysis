@@ -4,4 +4,4 @@ langchain
 openAI
 chromadb
 tiktoken
-
+nbconvert
