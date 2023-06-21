@@ -1,6 +1,5 @@
 requests
 nbformat
-PythonExporter
 langchain
 openAI
 chromadb
