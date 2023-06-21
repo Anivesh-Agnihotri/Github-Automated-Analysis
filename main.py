@@ -1,8 +1,14 @@
+import streamlit as st
+import subprocess
+
+# Install dependencies
+subprocess.check_call(["pip", "install", "-r", "requirements.txt"])
+
 import requests
 import concurrent.futures
 import nbformat
 from nbconvert import PythonExporter
-import streamlit as st
+
 import time
 #imports 
 from langchain.text_splitter import RecursiveCharacterTextSplitter
