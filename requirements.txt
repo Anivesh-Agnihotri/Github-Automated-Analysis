@@ -1,1 +1,9 @@
+requests==2.26.0
+concurrent.futures==1.10.0
+nbformat==5.1.3
+PythonExporter==0.4.8
+langchain
+openAI==0.27.8
+chromadb==0.3.26
+tiktoken==0.4.0
 
